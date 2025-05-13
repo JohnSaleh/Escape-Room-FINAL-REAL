@@ -1576,17 +1576,17 @@ void draw2DMessageBox(const char* title) {
 	// Save current matrix modes
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
-	glPushMatrix(); // Save the projection matrix
+	glPushMatrix();
 
 	glLoadIdentity();
-	gluOrtho2D(0, 1920, 0, 1080);  // 2D orthogonal projection
+	gluOrtho2D(0, 1920, 0, 1080);
 
 	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix(); // Save the modelview matrix
+	glPushMatrix(); 
 	glLoadIdentity();
 
-	glDisable(GL_DEPTH_TEST);  // Disable depth testing for 2D rendering
-	glDisable(GL_LIGHTING);    // Disable lighting for 2D rendering
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1632,10 +1632,10 @@ void draw2DMessageBox(const char* title) {
 	for (auto c : pass)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
 
-	// Restore state for 3D rendering
-	glDisable(GL_BLEND);  // Disable blending
-	glEnable(GL_DEPTH_TEST); // Enable depth testing for 3D
-	glEnable(GL_LIGHTING);   // Enable lighting for 3D rendering
+	
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING); 
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix(); // Restore modelview matrix
@@ -1643,10 +1643,9 @@ void draw2DMessageBox(const char* title) {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix(); // Restore projection matrix
 
-	glMatrixMode(GL_MODELVIEW); // Reset modelview mode
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-	// Ensure the 3D rendering context is preserved after the 2D overlay
-	glClear(GL_DEPTH_BUFFER_BIT); // Clear depth buffer to preserve 3D background
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 }
 
@@ -1938,28 +1937,22 @@ BoundingBox calculateAxeBladeBoundingBox(float trans_x, float trans_y, float tra
 	int axe_number) {
 	BoundingBox box;
 
-	// Calculate the pivot point (center of rotation)
 	float pivot_x = trans_x;
 	float pivot_y = trans_y + scale_y; // Top of the arm
 	float pivot_z = trans_z;
 
-	// Get current angle of this axe in radians
 	float angle = axe_angle[axe_number] * PI / 180.0f;
 
-	// The blade is at the bottom of the arm, which is at y=-1.0f in local space
 	float local_blade_center_x = 0.0f;
 	float local_blade_center_y = -1.0f;
 	float local_blade_center_z = 0.0f;
 
-	// Scale the local coordinates
 	local_blade_center_y *= scale_y;
 
-	// Apply rotation around the pivot point (Z-axis rotation)
-	// First translate to have origin at pivot
+
 	float centered_x = local_blade_center_x;
 	float centered_y = local_blade_center_y - scale_y; // Adjust for the pivot at the top of arm
 
-	// Then rotate
 	float rotated_x = centered_x * cos(angle) - centered_y * sin(angle);
 	float rotated_y = centered_x * sin(angle) + centered_y * cos(angle);
 
@@ -1968,12 +1961,10 @@ BoundingBox calculateAxeBladeBoundingBox(float trans_x, float trans_y, float tra
 	float world_blade_center_y = rotated_y + pivot_y;
 	float world_blade_center_z = pivot_z;
 
-	// Blade dimensions (scaled)
-	float blade_width = 1.6f * scale_x;  // Based on the 0.7f radius in drawQuarterBlade
-	float blade_height = 1.0f * scale_y; // Approximate height
-	float blade_depth = 0.5f * scale_z;  // Approximate depth
+	float blade_width = 1.6f * scale_x; 
+	float blade_height = 1.0f * scale_y; 
+	float blade_depth = 0.5f * scale_z; 
 
-	// Create the bounding box that follows the axe blade
 	box.min_x = world_blade_center_x - blade_width / 2;
 	box.max_x = world_blade_center_x + blade_width / 2;
 	box.min_y = world_blade_center_y - blade_height / 2;
@@ -1988,40 +1979,33 @@ void gameOverScreen() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	// Switch to 2D orthographic projection
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
 	gluOrtho2D(0, glutGet(GLUT_WINDOW_WIDTH), 0, glutGet(GLUT_WINDOW_HEIGHT));
 	glMatrixMode(GL_MODELVIEW);
 
-	// Disable lighting for text rendering
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
-	// Set text color to red
 	glColor3f(1.0f, 0.0f, 0.0f);
 
-	// Position the text in the center of the screen
 	int windowWidth = glutGet(GLUT_WINDOW_WIDTH);
 	int windowHeight = glutGet(GLUT_WINDOW_HEIGHT);
 
-	// Render "GAME OVER!" text
 	glRasterPos2i(windowWidth / 2 - 100, windowHeight / 2);
 	const char* text = "GAME OVER!";
 	for (const char* c = text; *c != '\0'; c++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
 	}
 
-	// Render "Press ESC to exit" text below
-	glColor3f(1.0f, 1.0f, 1.0f); // White color
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glRasterPos2i(windowWidth / 2 - 80, windowHeight / 2 - 30);
 	text = "Press ESC to exit";
 	for (const char* c = text; *c != '\0'; c++) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
 	}
 
-	// Restore the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -2033,40 +2017,33 @@ void winScreen() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	// Switch to 2D orthographic projection
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
 	gluOrtho2D(0, glutGet(GLUT_WINDOW_WIDTH), 0, glutGet(GLUT_WINDOW_HEIGHT));
 	glMatrixMode(GL_MODELVIEW);
 
-	// Disable lighting for text rendering
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
-	// Set text color to red
 	glColor3f(0.0f, 1.0f, 0.0f);
 
-	// Position the text in the center of the screen
 	int windowWidth = glutGet(GLUT_WINDOW_WIDTH);
 	int windowHeight = glutGet(GLUT_WINDOW_HEIGHT);
 
-	// Render "YOU WON!" text
 	glRasterPos2i(windowWidth / 2 - 100, windowHeight / 2);
 	const char* text = "YOU WON!";
 	for (const char* c = text; *c != '\0'; c++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
 	}
 
-	// Render "Press ESC to exit" text below
-	glColor3f(1.0f, 1.0f, 1.0f); // White color
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glRasterPos2i(windowWidth / 2 - 80, windowHeight / 2 - 30);
 	text = "Press ESC to exit";
 	for (const char* c = text; *c != '\0'; c++) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
 	}
 
-	// Restore the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
